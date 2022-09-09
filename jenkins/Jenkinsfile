@@ -4,15 +4,16 @@ pipeline{
     stages {
         stage('Get Source'){
             steps{
-                git url: 'https://github.com/arturcorreiajr/python-tcp-jenkins.git', branch: 'main'
+                git url: 'https://github.com/arturcorreiajr/python-tcp-jenkins.git',
+                credentialsId: 'springdeploy-user',
+                branch: 'main'
             }
 
         }
         stage('Docker Build'){
             steps{
                 script {
-                    dockerapp = docker.build("arturcorreiajunior/python-tcp:${env.BUILD_ID}",
-                        '-f ./Dockerfile .')
+                    dockerapp = docker.build("arturcorreiajunior/python-tcp:${env.BUILD_ID}", '-f ./Dockerfile .')
                 }
             }
         }
@@ -26,6 +27,21 @@ pipeline{
                 }
             }
         }
+        stage('Deploy docker'){
+                echo "arturcorreiajunior/python-tcp:${dockerImageTag}"
+                sh "docker stop python-tcp || true && docker rm python-tcp || true"
+                sh "docker run --name python-tcp -d -p 8080:80 python-tcp:${env.BUILD_ID}"
+        }
+
+
+
+
+
+
+
+
+
+
     }
 
 }
