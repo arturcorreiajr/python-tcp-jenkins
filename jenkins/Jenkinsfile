@@ -30,7 +30,7 @@ pipeline{
         stage('Deploy docker'){
             steps{
                 script {
-                    echo "arturcorreiajunior/python-tcp:${dockerImageTag}"
+                    echo "arturcorreiajunior/python-tcp:${env.BUILD_ID}"
                     sh "docker stop python-tcp || true && docker rm python-tcp || true"
                     sh "docker run --name python-tcp -d -p 8080:80 python-tcp:${env.BUILD_ID}"
                 }
